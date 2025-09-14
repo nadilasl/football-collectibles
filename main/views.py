@@ -1,7 +1,6 @@
 from django.http import HttpResponse
 from django.core import serializers
 from django.shortcuts import render, redirect, get_object_or_404
-from main.models import Employee
 from main.forms import ProductForm
 from main.models import Product
 
@@ -17,24 +16,6 @@ def show_main(request):
     }
 
     return render(request, "main.html", context)
-
-# add employee, bebas sesuai user input
-def add_employee(request):
-    new_employee = Employee.objects.create(
-        name = "Nadila",
-        age = 20,
-        persona = "Mahasiswaaaaaaaa"
-    )
-    
-    return HttpResponse(200)
-
-def show_employee(request):
-    employee = Employee.objects.all()
-    context = {
-        "employees" : employee,
-    }
-    
-    return render(request, "add_employee.html", context)
 
 # menghasilkan form yg dapat menambahkan data Product secara otomatis ketika data di submit dari form
 def create_product(request):

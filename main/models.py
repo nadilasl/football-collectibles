@@ -1,5 +1,5 @@
+import uuid
 from django.db import models
-from multiselectfield import MultiSelectField
 
 class Product(models.Model):
     CATEGORY_CHOICES = [
@@ -15,6 +15,7 @@ class Product(models.Model):
         ('match_worn', 'Match-Worn Jersey'),
     ]
     
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100) #max_length ini akan divalidasi di form
     price = models.IntegerField()
     description = models.TextField()
@@ -58,10 +59,3 @@ class Product(models.Model):
     # is_featured apakah produk ini adalah produk unggulan
     # blank artinya bisa dikonsongkan saat input
     # null boleh menyimpan NULL
-    
-# employee : name (max 255 karakter), age(bulat integer), persona(teks panjang gabole pake charfield)
-
-class Employee(models.Model):
-    name = models.CharField(max_length=255)
-    age = models.IntegerField()
-    persona = models.TextField()
