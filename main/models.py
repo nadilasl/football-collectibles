@@ -30,7 +30,7 @@ class Product(models.Model):
     ('m', 'M'),
     ('l', 'L'),
     ('xl', 'XL'),
-    ('xxl', 'XXL'),
+    ('xxl', 'XXL')
     ], blank=True)
     edition_type = models.CharField(max_length=20, choices=[
         ('replica', 'Replica'),
@@ -58,4 +58,3 @@ class Product(models.Model):
     # URLField menyimpan URL gambar yang bersifat optional
     # is_featured apakah produk ini adalah produk unggulan
     # blank artinya bisa dikonsongkan saat input
-    # null boleh menyimpan NULL
