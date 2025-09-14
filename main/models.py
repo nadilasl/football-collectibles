@@ -58,3 +58,9 @@ class Product(models.Model):
     # blank artinya bisa dikonsongkan saat input
     # null boleh menyimpan NULL
     
+# employee : name (max 255 karakter), age(bulat integer), persona(teks panjang gabole pake charfield)
+
+class Employee(models.Model):
+    name = models.CharField(max_length=255)
+    age = models.IntegerField()
+    persona = models.TextField()
