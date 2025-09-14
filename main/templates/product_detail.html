@@ -4,7 +4,7 @@
 
 <h1>{{ product.name }}</h1>
 <p>
-    <b>{{ product.get_category_display }}</b>
+    <b>{{ product.get_category_display }}</b> 
     {% if product.is_featured %} | <b>Featured</b>{% endif %}
     | Stock: {{ product.stock }}
     {% if product.release_year %} | Released: {{ product.release_year }}{% endif %}
@@ -17,7 +17,11 @@
 
 <p><b>Price:</b> ${{ product.price }}</p>
 <p><b>Brand:</b> {{ product.brand }}</p>
-<p><b>Size:</b> {{ product.get_size_display }}</p>
+
+{% if product.size %}
+<p><b>Size:</b> {{ product.size }}</p>
+{% endif %}
+
 <p><b>Edition:</b> {{ product.get_edition_type_display }}</p>
 <p><b>Condition:</b> {{ product.get_condition_display }}</p>
 <p><b>Rarity:</b> {{ product.get_rarity_level_display }}</p>

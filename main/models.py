@@ -1,4 +1,5 @@
 from django.db import models
+from multiselectfield import MultiSelectField
 
 class Product(models.Model):
     CATEGORY_CHOICES = [
@@ -18,7 +19,7 @@ class Product(models.Model):
     price = models.IntegerField()
     description = models.TextField()
     thumbnail = models.URLField() 
-    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='jersey')
     is_featured = models.BooleanField(default=False)
     stock = models.PositiveIntegerField(default=0) #positive agar tidak ada nilai negatif
     brand = models.CharField(max_length=50, blank=True)
