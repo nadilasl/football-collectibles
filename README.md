@@ -400,6 +400,16 @@ git push pws master
 
 Terdapat beberapa kendala ketika menggunakan Postman, khususnya saat mengetes fungsi pengambilan data newsberdasarkan ID. Saya sempat kebingungan karena tidak tahu di bagian mana ID tersebut dapat dilihat. Selain itu, ada beberapa potongan kode yang belum dijelaskan secara detail, sehingga menimbulkan sedikit kebingungan dalam memahami alurnya.
 
+7. Screenshot hasil akses URL pada Postman
+
+Postman JSON : https://drive.google.com/file/d/1EkEn34TzufMLcrq77Gl7cWr7aJdqk9JO/view?usp=sharing
+
+Postman XML : https://drive.google.com/file/d/1mOoRCYRU3oDD410P8vxe_1tXdRikyz4D/view?usp=sharing
+
+Postman JSON berdasarkan ID : https://drive.google.com/file/d/1GQcJGJ9_F3VEV29eoOmJ6lZTFtrmn0hI/view?usp=sharing
+
+Postman XML berdasarkan ID : https://drive.google.com/file/d/1KVvK6Ix3zjbTTJHoGPaxtU-dg09KHSld/view?usp=sharing
+
 Daftar Referensi
 
 Fiona Ratu Maheswari (FIO), Anthony Edbert Feriyanto (ANT), Meutia Fajriyah (MEW), & Yeshua Marco Gracia (ACO). (2025, Agustus 27). Tutorial 2: Form dan Data Delivery. PBP Fasilkom UI. Retrieved from https://pbp-fasilkom-ui.github.io/ganjil-2026/docs/tutorial-2
