@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+from django.contrib.auth.models import User
 
 class Product(models.Model):
     CATEGORY_CHOICES = [
@@ -15,6 +16,7 @@ class Product(models.Model):
         ('match_worn', 'Match-Worn Jersey'),
     ]
     
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100) #max_length ini akan divalidasi di form
     price = models.IntegerField()
