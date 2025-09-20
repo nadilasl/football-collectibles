@@ -433,3 +433,216 @@ Django. (n.d.). Cross Site Request Forgery protection. In Django documentation (
 GeeksforGeeks. (2025, August 5). CSRF token in Django. Retrieved from https://www.geeksforgeeks.org/python/csrf-token-in-django/
 
 Dizdar, A. (2021, June 11; modified 2025, March 25). What is a CSRF Token and How Does It Work? Brightsec. Retrieved from https://brightsec.com/blog/csrf-token/
+
+
+================================ TUGAS 4 ========================================
+
+1. Apa itu Django AuthenticationForm? Jelaskan juga kelebihan dan kekurangannya.
+
+AuthenticationForm adalah form bawaan di Django (`modul django.contrib.auth.forms`) yang digunakan untuk menangani proses login (autentikasi) user. Form ini memeriksa username, password, serta flag is_active, dan Django juga memudahkan penambahan verifikasi kustom.
+
+#### Kelebihan
+- Sudah banyak diuji oleh berbagai aplikasi yang menggunakannya di production.
+- Dukungan resmi (first-party support) karena bagian dari ekosistem Django.
+- Fleksibel, dibangun secara generik sehingga mudah diperluas sesuai kebutuhan.
+- Sederhana dan mudah dipahami.
+
+#### Kekurangan
+- Ada learning curve dan pengetahuan ini tidak langsung bisa diterapkan ke sistem autentikasi lain
+- Karena dibuat generik, diharapkan untuk dikustomisasi agar sesuai dengan kebutuhan, yang bisa menjadi merepotkan.
+- Sistem autentikasi sederhana yang mungkin tidak cocok untuk aplikasi dengan kebutuhan kompleks.
+- Tidak mendukung advanced use cases secara default sehingga developer perlu membangun dan merawat banyak logika kustom.
+
+2. Apa perbedaan antara autentikasi dan otorisasi? Bagaiamana Django mengimplementasikan kedua konsep tersebut?
+
+Authentication (AuthN) adalah proses verifikasi identitas seseorang atau suatu layanan, memastikan bahwa mereka adalah siapa yang mereka klaim. Contoh: ketika login ke sebuah situs, user memasukkan username dan password, lalu sistem mencocokkannya dengan data di database. Jika cocok, sistem menganggap user valid.
+
+Authorization (AuthZ) adalah proses keamanan untuk menentukan tingkat akses user atau layanan, yaitu apakah mereka berhak mengakses data tertentu atau melakukan suatu aksi.
+
+Autentikasi selalu dilakukan sebelum otorisasi, karena sistem tidak bisa memberikan izin tanpa mengetahui siapa user tersebut.
+
+#### Implementasi di Django
+Django menggunakan model `User` (atau custom user model) untuk merepresentasikan pengguna.
+
+a) Autentikasi
+- register : user membuat akun baru, lalu data User tersimpan di database.
+- login_user : memanggil authenticate() untuk cek username dan password. Jika valid, login() dipanggil, Django menyimpan session, dan request.user otomatis terisi.
+- logout_user : menghapus session user, sehingga request.user kembali menjadi AnonymousUser.
+
+Contoh : 
+```
+{% if product.user %}
+    <p>Seller: {{ product.user.username }}</p>
+{% else %}
+    <p>Seller: Anonymous</p>
+{% endif %}
+```
+
+b) Otorisasi
+- @login_required(login_url='/login') : hanya user yang sudah login boleh mengakses view tertentu. Jika belum login, user akan diarahkan ke halaman login.
+- Product.objects.filter(user=request.user) : membatasi data yang bisa diakses, misalnya user hanya bisa melihat produk miliknya sendiri.
+
+Contoh : 
+```
+@login_required(login_url='/login')
+def show_main(request):
+    if filter_type == "all":
+        product_list = Product.objects.all()
+    else:
+        product_list = Product.objects.filter(user=request.user)
+```
+
+3.  Apa saja kelebihan dan kekurangan session dan cookies dalam konteks menyimpan state di aplikasi web?
+
+Session (sesi) adalah cara bagi situs web untuk menyimpan data pengguna sementara selama pengguna masih aktif di situs tersebut. Data disimpan di server, dan biasanya hilang setelah pengguna menutup browser atau setelah periode tertentu tanpa aktivitas.
+
+#### Kelebihan Session 
+- Data tersimpan di server sehingga lebih aman.
+- Cocok untuk data sensitif seperti status login.
+- Otomatis terhapus setelah tidak aktif.
+
+#### Kekurangan Session
+- Membebani server karena harus menyimpan banyak data.
+- Tidak bisa bertahan lama setelah browser ditutup (kecuali diatur khusus).
+
+
+Cookie adalah file kecil yang disimpan di perangkat pengguna oleh browser. Cookie menyimpan data di sisi klien (browser), misalnya preferensi bahasa, produk yang pernah dilihat, atau data login. Tidak seperti session, cookie bisa tetap ada meskipun browser ditutup.
+
+#### Kelebihan Cookie
+- Bisa menyimpan data untuk jangka panjang
+- Cocok untuk menyimpan preferensi pengguna
+- Tidak membebani server karena data disimpan di browser
+#### Kekurangan Cookie
+- Kurang aman jika digunakan untuk menyimpan data sensitif
+- Bisa dihapus oleh pengguna kapan saja
+- Ukuran data terbatas
+
+
+4. Apakah penggunaan cookies aman secara default dalam pengembangan web, atau apakah ada risiko potensial yang harus diwaspadai? Bagaimana Django menangani hal tersebut?
+
+Penggunaan cookies tidak otomatis aman secara default. Django memang sudah menyediakan dasar yang baik, tetapi tidak berarti sempurna di semua lingkungan. Developer tetap harus memastikan pengaturan keamanan ditetapkan dengan benar.
+
+#### Risiko Potensial pada Cookies
+a) Pembajakan Sesi
+- Penyerang dapat mencegat cookie yang dikirimkan melalui jaringan tidak aman (misalnya Wi-Fi publik) dengan teknik packet sniffing
+- Jika cookie berhasil ditangkap, penyerang bisa memperoleh session identifier dan menyamar sebagai pengguna tanpa perlu mengetahui kredensial
+
+b) Cross-Site Scripting (XSS)
+- Terjadi jika penyerang menyuntikkan kode berbahaya ke situs
+- Jika input tidak divalidasi dengan benar, skrip berbahaya dapat mencuri cookie pengguna
+
+c) Cross-Site Request Forgery (CSRF)
+- Penyerang mengelabui pengguna agar tanpa sadar melakukan aksi di situs web
+- Browser mengirimkan cookie autentikasi, sehingga penyerang bisa memanfaatkan sesi pengguna untuk melakukan tindakan berbahaya
+
+#### Cara Django Menangani Risiko Ini
+a) Pengaturan Cookie yang Aman
+- SESSION_COOKIE_HTTPONLY = True :  mencegah cookie diakses oleh JavaScript (mengurangi risiko XSS)
+- SESSION_COOKIE_SECURE = True :  memastikan cookie hanya dikirim lewat koneksi HTTPS
+- CSRF_COOKIE_SECURE dan CSRF_COOKIE_HTTPONLY juga bisa diaktifkan untuk perlindungan tambahan
+
+b) Manajemen Sesi
+- Django mendukung penggunaan pengidentifikasi sesi yang kuat, waktu kedaluwarsa sesi, dan penghapusan sesi setelah logout
+- Developer bisa menambahkan autentikasi dua faktor untuk keamanan ekstra
+
+c) Validasi Input dan Penyandian Output
+- Input pengguna harus divalidasi dan dibersihkan
+- Karakter berbahaya difilter atau dienkode sebelum ditampilkan untuk mencegah eksekusi skrip (XSS)
+
+d) Perlindungan CSRF
+- Django secara default menyertakan CSRF token pada setiap form
+- Token ini diverifikasi di sisi server untuk memastikan permintaan sah, bukan hasil pemalsuan
+
+
+5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
+
+a) Membuat Fungsi dan Form Registrasi
+- Buka `views.py` pada subdirektori main. 
+- Tambahkan import `UserCreationForm` dan `messages` untuk memudahkan pembuatan formulir pendaftaran pengguna dalam aplikasi web. Dengan formulir ini, pengguna dapat mendaftar dengan mudah di situs web tanpa harus menulis kode dari awal
+- Tambahkan fungsi `register` di dalam `views.py`. Fungsi ini akan menghasilkan formulir registrasi secara otomatis dan menghasilkan akun pengguna ketika data di-submit dari form
+- Buat dan isi berkas HTML baru dengan nama `register.html` pada direktori `main/templates`
+- Buka `urls.py` pada subdirektori `main` dan impor fungsi `register`
+- Tambahkan path url ke dalam `urlpatterns` untuk mengakses fungsi `register`
+
+b) Membuat Fungsi Login
+- Buka `views.py` pada subdirektori `main`. Tambahkan import `authenticate`, `login`, dan `AuthenticationForm` untuk melakukan autentikasi dan login (jika autentikasi berhasil)
+- Tambahkan fungsi `login_user` di dalam `views.py` untuk mengatutensikasi pengguna yang ingin login
+- Buat dan isi berkas HTML baru dengan nama `login.html` pada direktori `main/templates`
+- Buka `urls.py` pada subdirektori `main` dan import fungsi `login_user`
+- Tambahkan path url ke dalam `urlpatterns` untuk mengakses fungsi `login_user`
+
+c) Membuat Fungsi Logout
+- Buka `views.py` pada subdirektori `main`. Tambahkan import `logout`, `authenticate`, dan `login`
+- Tambahkan fungsi `logout_user` di dalam `views.py` untuk melakukan mekanisme logout
+- Buka berkas `main.html` pada direktori `main/templates` dan tambahkan kode di bawah ini
+
+```
+<a href="{% url 'main:logout' %}">
+ <button>Logout</button>
+</a>
+```
+
+- Buka `urls.py` pada subdirektori `main` dan import fungsi `logout_user`
+- Tambahkan path url ke dalam `urlpatterns` untuk mengakses fungsi `logout_user`
+
+d) Merestriksi Akses Halaman Main dan Products Detail
+-  Buka `urls.py` pada subdirektori `main` dan import fungsi `logout_user`
+- Tambahkan path url ke dalam `urlpatterns` untuk mengakses fungsi `logout_user`
+
+e) Menggunakan Data dari Cookie
+- Buka `views.py` di subdirektori `main`. Tambahkan import `HttpResponseRedirect`, `reverse`, dan `datetime`
+- Ubah bagian kode di fungsi `login_user` untuk menyimpan cookie baru bernama `last_login` yang berisi timestamp terakhir kali pengguna melakukan login
+
+```
+if form.is_valid():
+   user = form.get_user()
+   login(request, user)
+   response = HttpResponseRedirect(reverse("main:show_main"))
+   response.set_cookie('last_login', str(datetime.datetime.now()))
+   return response
+```
+
+- Pada fungsi `show_main`, tambahkan potongan kode 
+`'last_login': request.COOKIES['last_login']`
+ke dalam variabel `context`
+- Ubah fungsi `logout_user` untuk menghapus cookie last_login setelah melakukan logout.
+- Buka berkas `main.html` di direktori `main/templates` dan tambahkan kode untuk menampilkan data waktu terakhir pengguna login.
+
+f) Menghubungkan Model Product dengan User
+- Buka `models.py` pada subdirektori `main`, kemudian import `User`
+- Pada model `Product`, tambahkan 
+`user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)`
+- Buat file migrasi model dengan 
+`python manage.py makemigrations`. Selanjutnya jalankan migrasi model dengan
+`python manage.py migrate`
+- Buka `views.py` pada subdirektori `main` dan ubah kode pada fungsi `create_product`
+- Modifikasi fungsi `show_main`
+- Tambahkan tombol filter My dan All pada halaman `main.html`
+- Tampilkan nama seller di `product_detail.html`
+- Jalankan proyek Django dengan perintah
+`python manage.py runserver`
+
+g) Lakukan add, commit, push ke GitHub dan PWS
+```
+git add .
+git commit -m "<pesan_commit>"
+git push origin master
+git push pws master
+```
+
+
+### Daftar Referensi
+
+Freitas, V. (2016, August 12). Django tips #10: AuthenticationForm custom login policy. Simple is Better Than Complex. https://simpleisbetterthancomplex.com/tips/2016/08/12/django-tip-10-authentication-form-custom-login-policy.html
+
+Shah, N. (2024, November 18). A comprehensive guide to Django's user authentication system. SuperTokens. https://supertokens.com/blog/django-user-authentication
+
+OneLogin. (n.d.). Authentication vs. authorization. OneLogin. https://www.onelogin.com/learn/authentication-vs-authorization
+
+Marlena, M., Raihandrawan, F. Z., Akhdan, E., Thang, N., Alkindi, M. M., & Karina, G. (2026). Tutorial 3: Autentikasi, session, cookies dan Selenium. PBP Fasilkom UI. https://pbp-fasilkom-ui.github.io/ganjil-2026/docs/tutorial-3
+
+Skemadigital. (2025, July 13). Pengertian session dan cookie. Skemadigital. https://skemadigital.id/blog/pengertian-session-dan-cookie/
+
+Django Software Foundation. (n.d.). Django settings. Django documentation (Version 5.2). https://docs.djangoproject.com/en/5.2/ref/settings/
+
+EITCA Academy. (2023, August 4). Apa risiko keamanan yang terkait dengan cookie dan bagaimana cookie dapat dieksploitasi oleh penyerang untuk menyamar sebagai pengguna dan mendapatkan akses tidak sah ke akun? EITCA. https://id.eitca.org/cybersecurity/eitc-is-acss-advanced-computer-systems-security/network-security/web-security-model/examination-review-web-security-model/what-are-the-security-risks-associated-with-cookies-and-how-can-they-be-exploited-by-attackers-to-impersonate-users-and-gain-unauthorized-access-to-accounts/
