@@ -54,9 +54,3 @@ class Product(models.Model):
     # Method __str__ untuk mengembalikan representasi string dari objek
     def __str__(self):
         return self.name
-    
-    # char field untuk teks pendek
-    # text field dapat menampun teks panjang
-    # URLField menyimpan URL gambar yang bersifat optional
-    # is_featured apakah produk ini adalah produk unggulan
-    # blank artinya bisa dikonsongkan saat input

@@ -646,3 +646,301 @@ Skemadigital. (2025, July 13). Pengertian session dan cookie. Skemadigital. http
 Django Software Foundation. (n.d.). Django settings. Django documentation (Version 5.2). https://docs.djangoproject.com/en/5.2/ref/settings/
 
 EITCA Academy. (2023, August 4). Apa risiko keamanan yang terkait dengan cookie dan bagaimana cookie dapat dieksploitasi oleh penyerang untuk menyamar sebagai pengguna dan mendapatkan akses tidak sah ke akun? EITCA. https://id.eitca.org/cybersecurity/eitc-is-acss-advanced-computer-systems-security/network-security/web-security-model/examination-review-web-security-model/what-are-the-security-risks-associated-with-cookies-and-how-can-they-be-exploited-by-attackers-to-impersonate-users-and-gain-unauthorized-access-to-accounts/
+
+
+================================ TUGAS 5 ========================================
+
+1. Jika terdapat beberapa CSS selector untuk suatu elemen HTML, jelaskan urutan prioritas pengambilan CSS selector tersebut!
+
+Ketika ada beberapa aturan CSS yang berlaku pada elemen yang sama, browser akan menentukan aturan mana yang dipakai dengan urutan prioritas berikut:
+
+a) Berdasarkan Sumber CSS
+- Inline style (langsung di atribut `style` dalam tag HTML) (paling tinggi)
+- Internal style (`<style>...</style>` di dalam file HTML)
+- Eksternal style (file .css yang dipanggil dengan `<link>` atau `@import`)
+- Inherited style (gaya yang diwarisi dari elemen parent) (paling lemah)
+
+b) Berdsarkan Spesifitas Selector
+CSS menghitung spesifisitas dengan format (a,b,c,d):
+- a = jumlah inline style → `1,0,0,0`
+- b = jumlah ID selector → `0,1,0,0`
+- c = jumlah class, attribute, pseudo-class selector → `0,0,1,0`
+- d = jumlah element, pseudo-element selector → `0,0,0,1`
+
+c) Aturan Tambahan
+- !important
+
+Akan mengalahkan semua aturan di atas, kecuali jika ada aturan lain dengan !important juga, maka kembali ke perhitungan spesifisitas
+- Urutan deklarasi (sequence of declaration) 
+
+Jika spesifisitas sama, maka aturan yang ditulis paling akhir di CSS yang akan menang.
+
+
+2. Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web? Berikan contoh aplikasi yang sudah dan belum menerapkan responsive design, serta jelaskan mengapa!
+
+#### Alasan Pentingnya Responsive Design
+
+a) Pertumbuhan Pengguna Mobile
+- 50% traffic internet global berasal dari perangkat mobile
+- Jika situs tidak ramah layar kecil, banyak pengguna akan meninggalkan website
+
+b) Peningkatan User Experience (UX)
+- Navigasi lebih mudah tanpa zoom, pinch, atau scroll horizontal
+- Memberikan pengalaman konsisten di semua perangkat, sehingga membuat pengguna betah lebih lama, bounce rate lebih rendah, dan peluang konversi lebih tinggi
+
+c) SEO (Search Engine Optimization) Benefits
+- Google menerapkan mobile-first indexing,  sehingga versi mobile menjadi acuan peringkat
+- Responsive design membantu ranking lebih baik karena UX bagus, URL tunggal, dan loading lebih cepat
+
+d) Efisiensi Biaya dan Maintenance
+- Tidak perlu membuat website terpisah untuk desktop dan mobile
+- Cukup satu situs responsive untuk semua perangkat sehingga lebih hemat biaya dan waktu perawatan
+
+e) Future-Proofing
+- Teknologi dan ukuran layar terus berkembang
+- Responsive design membuat situs fleksibel dan siap menghadapi perangkat masa depan
+
+#### Aplikasi Website yang Sudah Menerapkan Responsive Design
+
+a) Apple (https://www.apple.com/)
+
+Tampilan bersih dan elegan di semua layar. Gambar, tombol, dan teks tetap jelas serta interaktif di layar kecil.
+
+b) Amazon (https://www.amazon.com/)
+
+Navigasi otomatis beradaptasi di mobile (misalnya menu collapsible) sehingga belanja tetap nyaman di berbagai perangkat.
+
+#### Aplikasi Website yang Belum Menerapkan Responsive Design
+
+a) https://dequeuniversity.com/library/responsive/1-non-responsive
+
+Layout dibuat untuk lebar tertentu, konten melebar di luar viewport di layar kecil, teks sulit dibaca, dan navigasi tidak fleksibel.
+
+Akibatnya, pengguna mobile kesulitan membaca konten, sering harus zoom/scroll horizontal, dan UX menjadi buruk.
+
+3. Jelaskan perbedaan antara margin, border, dan padding, serta cara untuk mengimplementasikan ketiga hal tersebut!
+
+a) Margin
+- Ruang kosong di luar border elemen
+- Membuat jarak antar elemen
+- Bisa bernilai positif atau negatif (negatif menyebabkan elemen bisa saling tumpang tindih)
+- Tidak memengaruhi ukuran elemen (selalu di luar box)
+
+```
+.box {
+  margin: 20px;        /* semua sisi */
+  margin-top: 10px;    /* atas */
+  margin-right: 15px;  /* kanan */
+  margin-bottom: 20px; /* bawah */
+  margin-left: 5px;    /* kiri */
+}
+```
+
+b) Border
+- Garis antara margin dan padding
+- Lebarnya menambah ukuran elemen
+- Bisa diatur warna, ketebalan, dan gaya (solid, dashed, dotted, dll)
+
+```
+.box {
+  border: 2px solid black;       /* semua sisi */
+  border-top: 5px dashed red;    /* atas */
+  border-right: 3px dotted blue; /* kanan */
+  border-bottom: 4px double green; /* bawah */
+  border-left: 1px solid gray;   /* kiri */
+}
+```
+
+c) Padding
+- Ruang antara content dan border
+- Mendorong isi agar tidak menempel pada border
+- Tidak bisa bernilai negatif
+- Background elemen (warna/gambar) tetap tampil di area padding.
+
+```
+.box {
+  padding: 15px;        /* semua sisi */
+  padding-top: 10px;    /* atas */
+  padding-right: 20px;  /* kanan */
+  padding-bottom: 25px; /* bawah */
+  padding-left: 5px;    /* kiri */
+}
+```
+
+#### Contoh Implementasi Lengkap
+
+```
+div {
+  width: 300px;                /* lebar konten */
+  border: 15px solid green;    /* border hijau */
+  padding: 50px;               /* ruang isi ke border */
+  margin: 20px;                /* jarak ke elemen lain */
+}
+```
+
+4. Jelaskan konsep flex box dan grid layout beserta kegunaannya!
+
+a) Flex Box
+
+Metode layout satu dimensi untuk menyusun elemen dalam baris (row) atau kolom (column)
+
+#### Fungsi Utama
+
+- Mengatur elemen agar bisa meluas (expand) untuk mengisi ruang kosong atau menyusut (shrink) agar muat dalam ruang sempit
+
+#### Kegunaan
+
+- Memusatkan konten secara vertikal di dalam parent
+- Membuat semua anak elemen memiliki lebar/tinggi yang sama
+- Menyamakan tinggi kolom meskipun isi berbeda
+
+b) Grid Layout
+
+Metode layout dua dimensi untuk menyusun elemen dalam baris (rows) dan kolom (columns)
+
+#### Fungsi Utama
+
+- Membentuk pola dengan garis horizontal dan vertikal (grid lines)
+- Menyusun konten agar konsisten di seluruh halaman
+- Mendukung pembuatan layout kompleks dengan lebih mudah
+
+#### Komponen Grid
+
+- Rows (baris)
+- Columns (kolom)
+- Gaps (gutters) : jarak antar baris/kolom
+
+
+5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!
+
+a) Menambahkan Tailwind ke Aplikasi
+- Buka `base.html` pada templates folder yang berada di root project
+- Menambahkan script `cdn tailwind` di bagian head
+
+```
+<head>
+{% block meta %}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+{% endblock meta %}
+<script src="https://cdn.tailwindcss.com">
+</script>
+</head>
+```
+
+b) Menambahkan Fitur Edit Pada Aplikasi
+- Buka `views.py` yang ada pada subdirektori main dan buat fungsi baru bernama `edit_product` yang menerima parameter request dan id
+- Buat berkas HTML baru dengan nama `edit_product.html` 
+- Buka `urls.py` yang berada pada direktori main dan import fungsi `edit_product` yang sudah dibuat
+- Tambahkan path url ke dalam `urlpatterns` untuk mengakses fungsi yang sudah diimpor tadi
+- Buka main.html yang berada pada subdirektori `main/templates`. Pada loop `product_list`, perbarui potongan kode untuk memunculkan tombol edit pada setiap produk
+
+c) Menambahkan Fitur Hapus Product Pada Aplikasi
+- Buat fungsi baru dengan nama `delete_product` yang menerima parameter request dan id pada `views.py` di folder main untuk menghapus data produk
+- Buka `urls.py` yang berada pada direktori main dan import fungsi `edit_product` yang sudah dibuat
+- Tambahkan path url ke dalam `urlpatterns` untuk mengakses fungsi yang sudah diimpor tadi
+- Buka `main.html` yang berada pada subdirektori `main/templates`. Pada loop `product_list`, perbarui potongan kode untuk memunculkan tombol hapus pada setiap produk
+
+d) Menambahkan Navigation Bar pada Aplikasi
+- Buat dan isi berkas HTML baru dengan nama `navbar.html` pada folder `templates/` di root directory
+- Tautkan navbar ke dalam `main.html` yang berada pada subdirektori `main/templates/` dengan menggunakan tags include
+
+e) Konfigurasi Static Files pada Aplikasi
+- Pada `settings.py`, tambahkan middleware WhiteNoise
+- Pada `settings.py`, pastikan variabel `STATIC_ROOT`, `STATICFILES_DIRS`, dan `STATIC_URL` dikonfigurasikan seperti ini
+
+```
+STATIC_URL = '/static/'
+if DEBUG:
+    STATICFILES_DIRS = [
+        BASE_DIR / 'static' # merujuk ke /static root project pada mode development
+    ]
+else:
+    STATIC_ROOT = BASE_DIR / 'static' # merujuk ke /static root project pada mode production
+```
+
+f) Styling pada Aplikasi dengan Tailwind dan External CSS
+- Menambahkan `global.css`
+
+Buat file `global.css` di `/static/css` pada root direktori
+
+- Menghubungkan `global.css` dan script Tailwind ke `base.html`
+
+Tambahkan file `global.css` ke `base.html` dan modifikasi file `base.html`
+
+- Menambahkan Custom Styling ke `global.css`
+
+Modifikasi file `global.css` pada `static/css/global.css`
+
+- Styling Navbar
+
+Perbarui kode navbar pada template `navbar.html`
+
+- Styling Halaman Login
+
+Ubah berkas `login.html` pada subdirektori `main/templates/`
+
+- Styling Halaman Register
+
+Ubah berkas `register.html` pada subdirektori `main/templates/`
+
+- Styling Halaman Home
+
+i) Buat dan isi file `card_product.html` di direktori `main/templates`
+
+ii) Pilih satu foto dan namakan `no-product.png` 
+
+iii) Tambahkan foto `no-product.png` tadi ke direktori `static/image` yang berada di root project
+
+iv) Gunakan `card_product.html` dan `no-product.png` tersebut ke template `main.html`
+
+v) Pada direktori `main/templates`, modifikasi `main.html`
+
+- Styling Halaman Detail Product
+
+Ubah berkas `product_detail.html` pada subdirektori `main/templates`
+
+- Styling Halaman Create Product
+
+Ubah berkas `create_product.html` pada subdirektori `main/templates`
+
+- Styling Halaman Edit Product
+
+Ubah berkas `edit_news.html` pada subdirektori `main/templates`
+
+g) Jalankan proyek Django
+
+perintah `python manage.py runserver`
+
+h) Push dan commit ke GitHub dan PWS
+
+```
+git add .
+git commit -m "<pesan_commit>"
+git push origin master
+git push pws master
+```
+
+### Daftar Referensi
+
+Andre. (2013, October 13). Tutorial Belajar CSS Part 7: Urutan Prioritas Selector CSS (Cascading). Duniailkom. https://www.duniailkom.com/tutorial-belajar-css-urutan-prioritas-selector-css-cascading/
+
+Andre. (2013, October 13). Tutorial Belajar CSS Part 8: Urutan Prioritas Selector CSS (Specificity). Duniailkom. https://www.duniailkom.com/tutorial-belajar-css-urutan-prioritas-selector-css-specificity/
+
+Jenkov, J. (2020, July 4). CSS Precedence. Jenkov.com. https://jenkov.com/tutorials/css/precedence.html
+
+Deque University. (n.d.). This is an Example of a Non-Responsive Design. https://dequeuniversity.com/library/responsive/1-non-responsive
+
+W3Schools. (n.d.). Responsive Web Design - Introduction. https://www.w3schools.com/css/css_rwd_intro.asp
+
+Singh, H. (2025, June 18). What is Responsive Website Design? Examples and How to Use it. LetsGroto. https://www.letsgroto.com/blog/what-is-responsive-website-design
+
+Yadav, D. (n.d.). The Importance of Responsive Design in Website Development. Viblo. https://viblo.asia/p/the-importance-of-responsive-design-in-website-development-AZoJj3DELY7
+
+W3Schools. (n.d.). CSS Box Model. https://www.w3schools.com/css/css_boxmodel.asp
+
+MDN Web Docs. (n.d.). The box model. Mozilla. https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics/Box_model#margins_padding_and_borders
+
+MDN Web Docs. (n.d.). Flexbox. Mozilla. https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Flexbox
+
+MDN Web Docs. (n.d.). CSS grid layout. Mozilla. https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Grids

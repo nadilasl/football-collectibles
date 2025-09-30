@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block meta %}
-<title>Sell Product - Football Collectibles</title>
+<title>Edit Product - Football Collectibles</title>
 {% endblock meta %}
 
 {% block content %}
@@ -15,10 +17,10 @@
     </div>
     
     <!-- Form -->
-    <div class="bg-white rounded-lg border border-pewter-blue p-6 sm:p-8 form-style shadow-md">
+    <div class="bg-white rounded-lg border border-pewter-blue p-6 sm:p-8 form-style shadow-sm">
       <div class="mb-8">
-        <h1 class="text-2xl font-bold text-dark-charcoal mb-2">Sell New Product</h1>
-        <p class="text-russet">Share your football collectibles product and stories with the community</p>
+        <h1 class="text-2xl font-bold text-dark-charcoal mb-2">Edit Product</h1>
+        <p class="text-russet">Update your football collectibles product</p>
       </div>
       
       <form method="POST" class="space-y-6">
@@ -45,7 +47,7 @@
             Cancel
           </a>
           <button type="submit" class="order-1 sm:order-2 flex-1 bg-russet text-white px-6 py-3 rounded-md font-medium hover:bg-dark-charcoal transition-colors">
-            Sell Product
+            Update Product
           </button>
         </div>
       </form>

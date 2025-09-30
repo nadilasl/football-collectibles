@@ -1,45 +1,129 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block content %}
-<p><a href="{% url 'main:show_main' %}"><button>← Back to Product List</button></a></p>
+<div class="bg-gray-50 min-h-screen w-full">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-<h1>{{ product.name }}</h1>
-<p>
-    <b>{{ product.get_category_display }}</b> 
-    {% if product.is_featured %} | <b>Featured</b>{% endif %}
-    | Stock: {{ product.stock }}
-    {% if product.release_year %} | Released: {{ product.release_year }}{% endif %}
-</p>
+    <!-- Back Button -->
+    <p class="mb-6">
+      <a href="{% url 'main:show_main' %}" 
+         class="text-russet hover:underline font-medium flex items-center space-x-2">
+        ← <span class="ml-2">Back to Product List</span>
+      </a>
+    </p>
 
-{% if product.thumbnail %}
-<img src="{{ product.thumbnail }}" alt="Product thumbnail" width="300">
-<br /><br />
-{% endif %}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      
+      <!-- Product Image -->
+      <div class="flex justify-center items-start">
+        {% if product.thumbnail %}
+          <img src="{{ product.thumbnail }}" alt="{{ product.name }}"
+               class="rounded-xl shadow-md w-full max-w-md object-contain">
+        {% else %}
+          <div class="w-full max-w-md h-64 bg-gray-200 flex items-center justify-center rounded-xl">
+            <span class="text-gray-500">No Image</span>
+          </div>
+        {% endif %}
+      </div>
 
-<p><b>Price:</b> ${{ product.price }}</p>
-<p><b>Brand:</b> {{ product.brand }}</p>
+      <!-- Product Details -->
+      <div class="flex flex-col space-y-6 overflow-y-auto">
 
-{% if product.size %}
-<p><b>Size:</b> {{ product.size }}</p>
-{% endif %}
+        <!-- Header Section -->
+        <div>
+          <p class="text-sm uppercase tracking-wide text-weldon-blue font-semibold">
+            {{ product.get_category_display }}
+          </p>
+          <h1 class="text-3xl font-bold text-gray-900">{{ product.name }}</h1>
+          {% if product.is_featured %}
+            <span class="inline-block mt-2 bg-dark-vanilla text-white px-3 py-1 rounded-md text-sm font-medium">
+              Featured
+            </span>
+          {% endif %}
+        </div>
 
-<p><b>Edition:</b> {{ product.get_edition_type_display }}</p>
-<p><b>Condition:</b> {{ product.get_condition_display }}</p>
-<p><b>Rarity:</b> {{ product.get_rarity_level_display }}</p>
+        <!-- Price -->
+        <div>
+          <p class="inline-block bg-russet text-white px-5 py-3 rounded-xl text-xl font-semibold">
+            Rp{{ product.price }}
+          </p>
+        </div>
 
-{% if product.authenticity_certificate %}
-<p><b>Authenticity Certificate:</b> Available</p>
-{% else %}
-<p><b>Authenticity Certificate:</b> Not Available</p>
-{% endif %}
+        <!-- Brand & Seller Box -->
+        <div class="bg-dark-vanilla rounded-lg p-4 flex justify-between text-gray-800">
+          <div><b>Brand:</b> {{ product.brand|default:"Unknown" }}</div>
+          <div><b>Seller:</b> 
+            {% if product.user %}
+              {{ product.user.username }}
+            {% else %}
+              Anonymous
+            {% endif %}
+          </div>
+        </div>
 
-<hr>
+        <!-- Attributes -->
+        <div class="border-t border-gray-300 pt-4 grid grid-cols-2 gap-y-3 gap-x-6 text-gray-700">
+          {% if product.get_edition_type_display %}
+          <div class="flex items-center space-x-2">
+            <img src="{% static 'icons/edition.svg' %}" class="w-5 h-5">
+            <span><b>Edition:</b> {{ product.get_edition_type_display }}</span>
+          </div>
+          {% endif %}
 
-<p>{{ product.description }}</p>
+          {% if product.get_condition_display %}
+          <div class="flex items-center space-x-2">
+            <img src="{% static 'icons/condition.svg' %}" class="w-5 h-5">
+            <span><b>Condition:</b> {{ product.get_condition_display }}</span>
+          </div>
+          {% endif %}
 
-{% if product.user %}
-    <p>Seller: {{ product.user.username }}</p>
-{% else %}
-    <p>Seller: Anonymous</p>
-{% endif %}
+          {% if product.get_rarity_level_display %}
+          <div class="flex items-center space-x-2">
+            <img src="{% static 'icons/rarity.svg' %}" class="w-5 h-5">
+            <span><b>Rarity:</b> {{ product.get_rarity_level_display }}</span>
+          </div>
+          {% endif %}
 
+          <div class="flex items-center space-x-2">
+            <img src="{% static 'icons/certificate.svg' %}" class="w-5 h-5">
+            <span><b>Authenticity:</b> 
+              {% if product.authenticity_certificate %}
+                Available
+              {% else %}
+                Not Available
+              {% endif %}
+            </span>
+          </div>
+
+          {% if product.size %}
+          <div class="flex items-center space-x-2">
+            <img src="{% static 'icons/size.svg' %}" class="w-5 h-5">
+            <span><b>Size:</b> {{ product.size }}</span>
+          </div>
+          {% endif %}
+
+          <div class="flex items-center space-x-2">
+            <img src="{% static 'icons/stock.svg' %}" class="w-5 h-5">
+            <span><b>Stock:</b> {{ product.stock }}</span>
+          </div>
+
+          {% if product.release_year %}
+          <div class="flex items-center space-x-2">
+            <img src="{% static 'icons/calendar.svg' %}" class="w-5 h-5">
+            <span><b>Release Year:</b> {{ product.release_year }}</span>
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Description -->
+        <div>
+          <h2 class="text-lg font-bold text-gray-900 mb-2">Description</h2>
+          <p class="text-gray-700">{{ product.description }}</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock content %}

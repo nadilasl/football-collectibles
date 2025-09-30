@@ -1,0 +1,69 @@
+.form-style form input,
+.form-style form textarea,
+.form-style form select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 2px solid #bcbcbc;
+    border-radius: 0.375rem;
+    background-color: white; /* Dark Vanilla */
+    color: #33322B; /* Dark Charcoal */
+    font-family: 'Inter', sans-serif;
+}
+
+/* Focus state */
+.form-style form input:focus,
+.form-style form textarea:focus,
+.form-style form select:focus {
+    outline: none;
+    border-color: #7F4721; /* Russet */
+    box-shadow: 0 0 0 3px rgba(127, 71, 33, 0.2);
+}
+
+/* Checkbox */
+.form-style input[type="checkbox"] {
+    width: 1.25rem;
+    height: 1.25rem;
+    padding: 0;
+    border: 2px solid #7097A6; /* Weldon Blue */
+    border-radius: 0.375rem;
+    background-color: #fff;
+    cursor: pointer;
+    position: relative;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+/* Checkbox checked */
+.form-style input[type="checkbox"]:checked {
+    background-color: #7F4721; /* Russet */
+    border-color: #7F4721;
+}
+
+.form-style input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-weight: bold;
+    font-size: 0.875rem;
+}
+
+/* Checkbox focus */
+.form-style input[type="checkbox"]:focus {
+    outline: none;
+    border-color: #33322B; /* Dark Charcoal */
+    box-shadow: 0 0 0 3px rgba(51, 50, 43, 0.2);
+}
+
+/* Custom colors */
+.bg-dark-vanilla { background-color: #D5C1AC; }
+.text-dark-charcoal { color: #33322B; }
+.text-russet { color: #7F4721; }
+.text-weldon-blue { color: #7097A6; }
+.text-pewter-blue { color: #95B0BF; }
+.bg-russet { background-color: #7F4721; }
+.bg-dark-charcoal { background-color: #33322B; }
+.border-pewter-blue { border-color: #95B0BF; }

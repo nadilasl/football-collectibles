@@ -1,0 +1,89 @@
+{% load static %}
+
+<article class="bg-white rounded-lg border border-gray-200 hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col">
+  <!-- Thumbnail -->
+  <div class="aspect-[16/9] relative overflow-hidden">
+    {% if product.thumbnail %}
+      <img src="{{ product.thumbnail }}" alt="{{ product.name }}" class="w-full h-full object-cover">
+    {% else %}
+      <div class="w-full h-full bg-gray-200"></div>
+    {% endif %}
+
+    <!-- Category Badge -->
+    <div class="absolute top-3 left-3">
+      <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-russet text-white">
+        {{ product.get_category_display }}
+      </span>
+    </div>
+
+    <!-- Status Badges -->
+    <div class="absolute top-3 right-3 flex space-x-2">
+      {% if product.is_featured %}
+        <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
+          Featured
+        </span>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="p-5 flex flex-col flex-1">
+    <!-- Nama -->
+    <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 leading-tight">
+      <a href="{% url 'main:show_product' product.id %}" class="hover:text-dark-blue-900 transition-colors">
+        {{ product.name }}
+      </a>
+    </h3>
+
+    <!-- Price -->
+    <p class="text-sm font-medium text-gray-800 mb-2">
+      Rp {{ product.price }}
+    </p>
+
+    <!-- Description -->
+    <p class="text-gray-600 text-sm leading-relaxed line-clamp-3 mb-2">
+      {{ product.description|truncatewords:20 }}
+    </p>
+
+    <div class="mt-auto">
+    <!-- Extra info as badges -->
+    <div class="flex flex-wrap gap-2 mb-3">
+      <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-green-100 text-weldon-blue-800">
+        {{ product.get_edition_type_display }}
+      </span>
+      <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-amber-100 text-amber-800">
+        {{ product.get_condition_display }}
+      </span>
+      <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-yellow-100 text-yellow-800">
+        Certificate: {{ product.authenticity_certificate|yesno:"Yes,No" }}
+      </span>
+      <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-gray-100 text-gray-800">
+        {{ product.get_rarity_level_display }}
+      </span>
+    </div>
+
+    <!-- Action Buttons -->
+    {% if user.is_authenticated and product.user == user %}
+      <div class="flex items-center justify-between pt-3 border-t border-gray-100">
+        <a href="{% url 'main:show_product' product.id %}" class="text-weldon-blue hover:text-red-600 font-medium text-sm transition-colors">
+          Read more
+        </a>
+        <div class="flex space-x-2">
+          <a href="{% url 'main:edit_product' product.id %}" class="text-gray-600 hover:text-gray-700 text-sm transition-colors">
+            Edit
+          </a>
+          <a href="{% url 'main:delete_product' product.id %}" class="text-red-600 hover:text-red-700 text-sm transition-colors">
+            Delete
+          </a>
+        </div>
+      </div>
+    {% else %}
+      <div class="pt-3 border-t border-gray-100">
+        <a href="{% url 'main:show_product' product.id %}" class="text-weldon-blue hover:text-red-600 font-medium text-sm transition-colors">
+          Read more →
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+</article>
