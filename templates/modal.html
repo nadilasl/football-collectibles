@@ -1,0 +1,255 @@
+<!-- Modal -->
+<div id="crudModal" 
+     class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
+     data-mode="create" 
+     data-edit-id="">
+  <div id="crudModalContent" class="bg-white rounded-lg border border-pewter-blue shadow-lg w-11/12 sm:w-3/5 md:w-1/2 lg:w-2/5 max-h-screen overflow-y-auto transform transition-all duration-200 scale-95 opacity-0">
+
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between p-6 border-b border-pewter-blue">
+      <div>
+        <h3 id="modalTitle" class="text-2xl font-bold text-dark-charcoal">Sell New Product</h3>
+        <p id="modalSubtitle" class="text-russet text-sm mt-1">Share your football collectibles product and stories with the community</p>
+      </div>
+      <button type="button" class="text-russet hover:text-dark-charcoal rounded-lg p-1.5" onclick="hideModal()">
+        <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 
+          8.586l4.293-4.293a1 1 0 111.414 
+          1.414L11.414 10l4.293 4.293a1 1 0 
+          01-1.414 1.414L10 
+          11.414l-4.293 4.293a1 1 0 
+          01-1.414-1.414L8.586 10 
+          4.293 5.707a1 1 0 010-1.414z" 
+          clip-rule="evenodd"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="px-6 py-6 space-y-6 form-style">
+      <form id="productForm">
+        
+        <!-- Name -->
+        <div class="mb-4">
+          <label for="name" class="block text-sm font-medium text-dark-charcoal mb-2">Name</label>
+          <input type="text" id="name" name="name" class="w-full border border-pewter-blue rounded-md px-3 py-2 focus:ring-2 focus:ring-russet focus:outline-none" placeholder="Enter product name" required>
+        </div>
+
+        <!-- Price -->
+        <div class="mb-4">
+          <label for="price" class="block text-sm font-medium text-dark-charcoal mb-2">Price</label>
+          <input type="number" id="price" name="price" class="w-full border border-pewter-blue rounded-md px-3 py-2 focus:ring-2 focus:ring-russet focus:outline-none" placeholder="Enter price" required>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-4">
+          <label for="description" class="block text-sm font-medium text-dark-charcoal mb-2">Description</label>
+          <textarea id="description" name="description" rows="3" class="w-full border border-pewter-blue rounded-md px-3 py-2 focus:ring-2 focus:ring-russet focus:outline-none" placeholder="Enter product description" required></textarea>
+        </div>
+
+        <!-- Thumbnail -->
+        <div class="mb-4">
+          <label for="thumbnail" class="block text-sm font-medium text-dark-charcoal mb-2">Thumbnail</label>
+          <input type="url" id="thumbnail" name="thumbnail" class="w-full border border-pewter-blue rounded-md px-3 py-2 focus:ring-2 focus:ring-russet focus:outline-none" placeholder="https://example.com/image.jpg" required>
+        </div>
+
+        <!-- Category -->
+        <div class="mb-4">
+          <label for="category" class="block text-sm font-medium text-dark-charcoal mb-2">Category</label>
+          <select id="category" name="category" class="w-full border border-pewter-blue rounded-md px-3 py-2 focus:ring-2 focus:ring-russet focus:outline-none">
+            <option value="jersey">Jersey</option>
+            <option value="scarves_banner">Scarves or Banners</option>
+            <option value="footballs">Collector Footballs</option>
+            <option value="autographed">Autographed Memorabilia</option>
+            <option value="second_hand">Second-Hand Collectible</option>
+            <option value="limited_edition">Limited Edition Item</option>
+            <option value="authentic_retail">Authentic Retail Jersey</option>
+            <option value="replica_jersey">Replica Jersey</option>
+            <option value="match_worn">Match-Worn Jersey</option>
+          </select>
+        </div>
+
+        <!-- Is Featured -->
+        <div class="mb-4 flex items-center">
+          <input id="is_featured" name="is_featured" type="checkbox" class="w-4 h-4 text-russet border-pewter-blue rounded focus:ring-russet">
+          <label for="is_featured" class="ml-2 text-sm font-medium text-dark-charcoal">Is featured</label>
+        </div>
+
+        <!-- Stock -->
+        <div class="mb-4">
+          <label for="stock" class="block text-sm font-medium text-dark-charcoal mb-2">Stock</label>
+          <input type="number" id="stock" name="stock" min="0" class="w-full border border-pewter-blue rounded-md px-3 py-2 focus:ring-2 focus:ring-russet focus:outline-none" value="0">
+        </div>
+
+        <!-- Brand -->
+        <div class="mb-4">
+          <label for="brand" class="block text-sm font-medium text-dark-charcoal mb-2">Brand</label>
+          <input type="text" id="brand" name="brand" class="w-full border border-pewter-blue rounded-md px-3 py-2 focus:ring-2 focus:ring-russet focus:outline-none" placeholder="Enter brand name">
+        </div>
+
+        <!-- Release Year -->
+        <div class="mb-4">
+          <label for="release_year" class="block text-sm font-medium text-dark-charcoal mb-2">Release year</label>
+          <input type="number" id="release_year" name="release_year" min="1900" max="2100" class="w-full border border-pewter-blue rounded-md px-3 py-2 focus:ring-2 focus:ring-russet focus:outline-none" placeholder="2024">
+        </div>
+
+        <!-- Size -->
+        <div class="mb-4">
+          <label for="size" class="block text-sm font-medium text-dark-charcoal mb-2">Size</label>
+          <select id="size" name="size" class="w-full border border-pewter-blue rounded-md px-3 py-2 focus:ring-2 focus:ring-russet focus:outline-none">
+            <option value="">-- Choose size --</option>
+            <option value="s">S</option>
+            <option value="m">M</option>
+            <option value="l">L</option>
+            <option value="xl">XL</option>
+            <option value="xxl">XXL</option>
+          </select>
+        </div>
+
+        <!-- Edition Type -->
+        <div class="mb-4">
+          <label for="edition_type" class="block text-sm font-medium text-dark-charcoal mb-2">Edition type</label>
+          <select id="edition_type" name="edition_type" class="w-full border border-pewter-blue rounded-md px-3 py-2 focus:ring-2 focus:ring-russet focus:outline-none">
+            <option value="replica">Replica</option>
+            <option value="limited">Limited Edition</option>
+            <option value="secondhand">Second Hand</option>
+          </select>
+        </div>
+
+        <!-- Condition -->
+        <div class="mb-4">
+          <label for="condition" class="block text-sm font-medium text-dark-charcoal mb-2">Condition</label>
+          <select id="condition" name="condition" class="w-full border border-pewter-blue rounded-md px-3 py-2 focus:ring-2 focus:ring-russet focus:outline-none">
+            <option value="new">New</option>
+            <option value="like_new">Like New</option>
+            <option value="good">Good</option>
+          </select>
+        </div>
+
+        <!-- Authenticity Certificate -->
+        <div class="mb-4 flex items-center">
+          <input id="authenticity_certificate" name="authenticity_certificate" type="checkbox" class="w-4 h-4 text-russet border-pewter-blue rounded focus:ring-russet">
+          <label for="authenticity_certificate" class="ml-2 text-sm font-medium text-dark-charcoal">Authenticity certificate</label>
+        </div>
+
+        <!-- Rarity Level -->
+        <div class="mb-4">
+          <label for="rarity_level" class="block text-sm font-medium text-dark-charcoal mb-2">Rarity level</label>
+          <select id="rarity_level" name="rarity_level" class="w-full border border-pewter-blue rounded-md px-3 py-2 focus:ring-2 focus:ring-russet focus:outline-none">
+            <option value="common">Common</option>
+            <option value="rare">Rare</option>
+            <option value="legendary">Legendary</option>
+          </select>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="flex flex-col sm:flex-row gap-4 p-6 border-t border-pewter-blue">
+      <button type="button" class="order-2 sm:order-1 px-6 py-3 border border-weldon-blue text-weldon-blue rounded-md font-medium hover:bg-pewter-blue hover:text-white transition-colors text-center" onclick="hideModal()">Cancel</button>
+      <button type="submit" id="submitProduct" form="productForm" class="order-1 sm:order-2 flex-1 bg-russet text-white px-6 py-3 rounded-md font-medium hover:bg-dark-charcoal transition-colors">Save Product</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal Show/Hide Script -->
+<script>
+  function showModal(mode = 'create', product = null) {
+    const modal = document.getElementById('crudModal');
+    const modalContent = document.getElementById('crudModalContent');
+    const title = document.getElementById('modalTitle');
+    const subtitle = document.getElementById('modalSubtitle');
+    const form = document.getElementById('productForm');
+
+    modal.dataset.mode = mode;
+    modal.dataset.editId = product ? product.id : "";
+
+    if (mode === 'edit' && product) {
+      title.textContent = 'Edit Product';
+      subtitle.textContent = 'Update your collectible product details';
+      // isi form dari data produk
+      for (const [key, value] of Object.entries(product)) {
+        const field = form.querySelector(`[name="${key}"]`);
+        if (!field) continue;
+        if (field.type === "checkbox") field.checked = value;
+        else field.value = value ?? "";
+      }
+    } else {
+      title.textContent = 'Sell New Product';
+      subtitle.textContent = 'Share your football collectibles product and stories with the community';
+      form.reset();
+    }
+
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+      modalContent.classList.remove('opacity-0', 'scale-95');
+      modalContent.classList.add('opacity-100', 'scale-100');
+    }, 50);
+  }
+
+  function hideModal() {
+    const modal = document.getElementById('crudModal');
+    const modalContent = document.getElementById('crudModalContent');
+    modalContent.classList.remove('opacity-100', 'scale-100');
+    modalContent.classList.add('opacity-0', 'scale-95');
+    setTimeout(() => {
+      modal.classList.add('hidden');
+    }, 150);
+  }
+
+
+async function addOrEditProduct() {
+  const form = document.querySelector('#productForm');
+  const mode = form.dataset.mode || 'add';
+  const productId = form.dataset.productId || null;
+
+  const url = mode === 'edit'
+    ? `{% url 'main:edit_product_ajax' '00000000-0000-0000-0000-000000000000' %}`.replace('00000000-0000-0000-0000-000000000000', productId)
+    : `{% url 'main:add_product_entry_ajax' %}`;
+
+  await fetch(url, {
+    method: "POST",
+    body: new FormData(form),
+  });
+
+  form.reset();
+  delete form.dataset.mode;
+  delete form.dataset.productId;
+  hideModal();
+
+  const msg = mode === 'edit' ? 'Product updated successfully!' : 'Product added successfully!';
+  showToast(msg, '', 'success');
+  document.dispatchEvent(new CustomEvent('productAdded'));
+
+  return false;
+}
+
+document.getElementById("productForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+  addOrEditProduct();
+});
+
+
+   async function addProductEntry() {
+    await fetch("{% url 'main:add_product_entry_ajax' %}", {
+      method: "POST",
+      body: new FormData(document.querySelector('#productForm')),
+    })
+
+    document.getElementById("productForm").reset();
+    hideModal();
+
+    showToast('Product added successfully!', '', 'success');
+
+    document.dispatchEvent(new CustomEvent('productAdded'));
+
+    return false;
+  } 
+
+  document.getElementById("productForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    addProductEntry();
+    })
+</script>

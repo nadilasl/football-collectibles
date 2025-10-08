@@ -1,0 +1,16 @@
+{% load static %}
+<nav class="navbar">
+    <div class="navbar">
+        <div class="logo">
+        <img src="{{ product.thumbnail }}" alt="{{ product.name }}" class="w-full h-full object-cover">
+        <h1>
+            <span>Judul Website</span>
+        </h1>
+        </div>
+
+        <div class="nav-links">
+            <a href="{% url 'main:create_product' %}">Create Product</a>
+            <a href="{% url 'main:create_product' %}">Create Product</a>
+        </div>
+    </div>
+</nav>

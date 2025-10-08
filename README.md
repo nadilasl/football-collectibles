@@ -944,3 +944,127 @@ MDN Web Docs. (n.d.). The box model. Mozilla. https://developer.mozilla.org/en-U
 MDN Web Docs. (n.d.). Flexbox. Mozilla. https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Flexbox
 
 MDN Web Docs. (n.d.). CSS grid layout. Mozilla. https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Grids
+
+
+================================ TUGAS 6 ========================================
+
+1. Apa perbedaan antara synchronous request dan asynchronous request?
+
+#### Synchronous Request
+- Mencegah DOM atau browser mengeksekusi kode lain sampai server memberikan respons
+- Jika respons diterima, barulah kode berikutnya dieksekusi
+- Tidak dapat membuat permintaan baru sebelum respons dari permintaan sebelumnya diterima
+- Selama menunggu respons, DOM dan browser diblokir (tidak bisa digunakan)
+- Untuk membuat request sinkron di AJAX, gunakan parameter async: false
+
+#### Asynchronous Request
+- Tidak menghalangi DOM atau browser dalam mengeksekusi kode lain saat menunggu respons server
+- Browser atau DOM tidak menunggu respons,  kode berikutnya tetap dijalankan langsung
+- Browser dapat menjalankan beberapa permintaan asynchronous secara bersamaan
+- Untuk membuat request asynchronous di AJAX, gunakan parameter async: true
+
+2. Bagaimana AJAX bekerja di Django (alur request–response)?
+
+#### Client-Side (Browser) : Mengirim Request
+
+* Kode JavaScript di sisi klien membuat permintaan saat terjadi event di halaman (misalnya klik tombol)
+* JavaScript membentuk objek XHR yang berisi data dan dikirim ke server Django
+* Objek XHR ini juga menyertakan URL atau nama callback function di server yang akan menangani permintaan tersebut
+
+#### Server-Side (Django) : Memproses Request
+
+* Server menerima request melalui view function (callback function)
+* View function ini akan memproses data, menjalankan logika yang diperlukan, lalu mengirimkan respons ke client
+* Karena AJAX bersifat asynchronous, eksekusi kode lain di browser tidak terhenti selama menunggu respons dari server
+
+#### Response dari Server
+
+* Setelah server selesai memproses permintaan, ia mengirimkan respons sukses atau gagal
+* Respons sukses bisa dalam berbagai format:
+
+a) Text Format
+b) HTML Format (berisi elemen HTML)
+c) JSON Format
+d) JSONP Format (jika berasal dari domain lain)
+e) Script Format (berisi JavaScript yang bisa dijalankan di halaman)
+f) XML Format
+
+* Respons gagal juga bisa dikirim dalam format serupa untuk menampilkan pesan error atau tindakan lain
+
+#### Client-Side : Menangani Respons
+
+* Setelah menerima respons, JavaScript di browser mengeksekusi sesuai data yang diterima
+* Misalnya, memperbarui elemen HTML, menampilkan pesan notifikasi, atau menjalankan skrip tertentu di halaman
+* Dengan cara ini, bagian tertentu dari halaman bisa berubah tanpa reload penuh
+
+3. Apa keuntungan menggunakan AJAX dibandingkan render biasa di Django?
+
+- Meningkatkan User Experience (UX)
+
+Kelebihan pertama dari AJAX adalah dapat meningkatkan pengalaman pengguna (User Experience). Website yang menggunakan AJAX menjadi lebih menarik dan cepat karena pengguna tidak perlu berganti halaman (reload) saat melakukan suatu tindakan. Hal ini membuat interaksi di website terasa lebih halus dan responsif
+
+- Mengirim dan Mengambil Data dari Server Secara Asinkron
+
+AJAX berfungsi untuk mengirim dan mengambil data dari server secara asynchronous. Artinya, browser tetap dapat digunakan meskipun proses pengiriman atau penerimaan data sedang berlangsung. Pengguna tidak perlu menunggu halaman dimuat ulang untuk melihat hasil dari suatu aksi
+
+- Mengupdate Tampilan Website Tanpa Harus Reload
+
+Salah satu keunggulan utama AJAX adalah kemampuannya untuk memperbarui tampilan halaman web tanpa perlu melakukan reload seluruh halaman. AJAX hanya mengambil dan memperbarui bagian data yang dibutuhkan saja, sehingga pengguna dapat berinteraksi lebih cepat dengan situs
+
+- Membuat Website Lebih Cepat dan Responsif
+
+Dengan hanya merequest data penting langsung ke server, AJAX membantu mempercepat proses pemuatan data. Hal ini membuat website terasa lebih ringan, cepat, dan responsif bagi pengguna
+
+- Mengurangi Penggunaan Bandwidth dan Meningkatkan Kecepatan
+
+AJAX menggunakan skrip sisi klien untuk berkomunikasi dengan browser web dan melakukan pertukaran data menggunakan JavaScript. Karena hanya data yang diperlukan saja yang diambil, penggunaan bandwidth berkurang dan kinerja website menjadi lebih efisien
+
+- Meningkatkan Kompatibilitas
+
+AJAX memiliki tingkat kompatibilitas yang tinggi. Teknologi ini dapat digunakan bersama berbagai bahasa pemrograman seperti ASP.NET, J2EE, PHP, dan lainnya. Selain itu, hampir semua browser modern (termasuk Internet Explorer) juga sudah mendukung AJAX
+
+4. Bagaimana cara memastikan keamanan saat menggunakan AJAX untuk fitur Login dan Register di Django?
+
+- Terapkan Perlindungan CSRF (Cross-Site Request Forgery)
+
+Token ini memastikan bahwa setiap permintaan yang diterima aplikasi web berasal dari sumber tepercaya, bukan dari pihak berbahaya yang mencoba menipu sistem. Token ini bersifat unik untuk setiap pengguna dan wajib disertakan dalam setiap permintaan AJAX untuk mencegah serangan CSRF
+
+- Gunakan HTTPS
+
+Saat informasi dikirim dari aplikasi web ke server atau sebaliknya, penggunaan HTTPS membuat data tersebut terenkripsi, seperti memasukkannya ke dalam amplop tertutup rapat. Dengan begitu, data tidak dapat dengan mudah disadap atau diubah oleh pihak ketiga. HTTPS menjamin bahwa hanya pengirim dan penerima yang dapat memahami isi data yang dikirim
+
+- Validasi dan Sanitasi Input
+
+Validasi input memastikan bahwa data yang dikirim sesuai dengan format yang diharapkan, misalnya, hanya angka untuk kolom tertentu. Sementara itu, sanitasi input bertugas memfilter data yang masuk agar tidak mengandung skrip atau kode berbahaya. Langkah ini penting untuk mencegah serangan seperti cross-site scripting (XSS)
+
+- Konfigurasikan CORS (Cross-Origin Resource Sharing) dengan Benar
+
+Dengan mengonfigurasi header CORS secara benar, hanya domain yang tepercaya yang dapat mengakses sumber daya. Hal ini mencegah situs asing melakukan permintaan AJAX berbahaya ke server
+
+- Validasi Input di Sisi Server
+
+Validasi input di sisi server berfungsi sebagai lapisan keamanan tambahan setelah validasi di sisi klien. Server akan memeriksa apakah data yang diterima sesuai dengan format yang diharapkan, sehingga dapat mencegah serangan seperti injeksi kode atau SQL injection. Validasi di sisi server wajib dilakukan karena data dari klien tidak selalu dapat dipercaya sepenuhnya
+
+- Terapkan Kontrol Akses
+
+Terapkan daftar kontrol akses (access control list) untuk memastikan bahwa hanya pengguna yang memiliki izin tertentu yang dapat mengirim permintaan AJAX. Setiap pengguna hanya boleh mengakses sumber daya atau melakukan tindakan sesuai dengan perannya. Dengan begitu, tindakan melalui AJAX hanya dapat dilakukan oleh pengguna yang berwenang
+
+5. Bagaimana AJAX mempengaruhi pengalaman pengguna (User Experience) pada website?
+
+AJAX dapat meningkatkan User Experience (UX) secara signifikan karena memungkinkan halaman web berinteraksi dengan server di latar belakang tanpa perlu memuat ulang seluruh halaman. Dengan begitu, proses pada website menjadi lebih cepat, efisien, dan terasa lebih halus bagi pengguna.
+
+Website yang menggunakan AJAX akan terlihat lebih menarik dan responsif, karena pengguna dapat melakukan tindakan seperti mengirim formulir, memuat data baru, atau memperbarui tampilan tanpa terganggu oleh proses reload halaman. Hal ini memberikan pengalaman yang lebih dinamis dan interaktif, sehingga pengguna merasa nyaman dan tidak perlu menunggu lama setiap kali melakukan suatu aksi.
+
+Dengan kemampuan AJAX untuk berkomunikasi dengan server di background, kecepatan dan efisiensi website meningkat, menghasilkan tampilan dan interaksi yang lebih lancar, cepat, dan menyenangkan bagi pengguna.
+
+### Daftar Referensi
+
+GeeksforGeeks. (2025, 23 Juli). Difference between synchronous and asynchronous requests in jQuery Ajax. Diakses dari https://www.geeksforgeeks.org/jquery/difference-between-synchronous-and-asynchronous-requests-in-jquery-ajax/
+
+Singhal, Gaurav. (2019, 18 Desember). How to Work with AJAX in Django. Pluralsight. Diakses dari https://www.pluralsight.com/resources/blog/guides/work-with-ajax-django
+
+Redaksi Jagoan Hosting. (2022, 19 Mei). AJAX: Pengertian, Cara Kerja, Fungsi dan Kurang Lebih. Jagoan Hosting. Diakses dari https://www.jagoanhosting.com/blog/ajax-adalah/#kelebihan-ajax
+
+GeeksforGeeks. (2023, 20 November). AJAX Security. Diakses dari https://www.geeksforgeeks.org/javascript/ajax-security/
+
+GeeksforGeeks. (2025, 9 Juni). Ajax Introduction. Diakses dari https://www.geeksforgeeks.org/javascript/ajax-introduction/

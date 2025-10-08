@@ -13,117 +13,215 @@
       </a>
     </p>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      
-      <!-- Product Image -->
-      <div class="flex justify-center items-start">
-        {% if product.thumbnail %}
-          <img src="{{ product.thumbnail }}" alt="{{ product.name }}"
-               class="rounded-xl shadow-md w-full max-w-md object-contain">
-        {% else %}
-          <div class="w-full max-w-md h-64 bg-gray-200 flex items-center justify-center rounded-xl">
-            <span class="text-gray-500">No Image</span>
-          </div>
-        {% endif %}
-      </div>
+    <!-- Loading State -->
+    <div id="loading-state" class="bg-white rounded-lg border border-gray-200 p-12 text-center">
+      <svg class="animate-spin h-8 w-8 text-russet inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+      </svg>
+      <p class="text-gray-600 mt-3">Loading product detail...</p>
+    </div>
 
-      <!-- Product Details -->
-      <div class="flex flex-col space-y-6 overflow-y-auto">
+    <!-- Error State -->
+    <div id="error-state" class="bg-white rounded-lg border border-gray-200 p-12 text-center hidden">
+      <div class="text-5xl mb-4">⚠️</div>
+      <h3 class="text-lg font-medium text-gray-900 mb-2">Failed to load product</h3>
+      <p class="text-gray-500">Please try again later.</p>
+    </div>
 
-        <!-- Header Section -->
-        <div>
-          <p class="text-sm uppercase tracking-wide text-weldon-blue font-semibold">
-            {{ product.get_category_display }}
-          </p>
-          <h1 class="text-3xl font-bold text-gray-900">{{ product.name }}</h1>
-          {% if product.is_featured %}
-            <span class="inline-block mt-2 bg-dark-vanilla text-white px-3 py-1 rounded-md text-sm font-medium">
+    <!-- Product Content (Loaded via AJAX) -->
+    <div id="product-content" class="hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        
+        <!-- Product Image -->
+        <div class="flex justify-center items-start">
+          <img id="product-thumbnail" src="" alt="" class="rounded-xl shadow-md w-full max-w-md object-contain">
+        </div>
+
+        <!-- Product Details -->
+        <div class="flex flex-col space-y-6 overflow-y-auto">
+
+          <!-- Header Section -->
+          <div>
+            <p id="product-category" class="text-sm uppercase tracking-wide text-weldon-blue font-semibold"></p>
+            <h1 id="product-name" class="text-3xl font-bold text-gray-900"></h1>
+            <span id="product-featured" class="hidden inline-block mt-2 bg-dark-vanilla text-white px-3 py-1 rounded-md text-sm font-medium">
               Featured
             </span>
-          {% endif %}
+          </div>
+
+          <!-- Price -->
+          <div>
+            <p id="product-price" class="inline-block bg-russet text-white px-5 py-3 rounded-xl text-xl font-semibold"></p>
+          </div>
+
+          <!-- Brand & Seller Box -->
+          <div class="bg-dark-vanilla rounded-lg p-4 flex justify-between text-gray-800">
+            <div><b>Brand:</b> <span id="product-brand"></span></div>
+            <div><b>Seller:</b> <span id="product-seller"></span></div>
+          </div>
+
+          <!-- Attributes -->
+          <div class="border-t border-gray-300 pt-4 grid grid-cols-2 gap-y-3 gap-x-6 text-gray-700">
+
+            <div class="flex items-center space-x-2">
+              <img src="{% static 'icons/edition.svg' %}" class="w-5 h-5">
+              <span><b>Edition:</b> <span id="product-edition"></span></span>
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <img src="{% static 'icons/condition.svg' %}" class="w-5 h-5">
+              <span><b>Condition:</b> <span id="product-condition"></span></span>
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <img src="{% static 'icons/rarity.svg' %}" class="w-5 h-5">
+              <span><b>Rarity:</b> <span id="product-rarity"></span></span>
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <img src="{% static 'icons/certificate.svg' %}" class="w-5 h-5">
+              <span><b>Authenticity:</b> <span id="product-authenticity"></span></span>
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <img src="{% static 'icons/size.svg' %}" class="w-5 h-5">
+              <span><b>Size:</b> <span id="product-size"></span></span>
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <img src="{% static 'icons/stock.svg' %}" class="w-5 h-5">
+              <span><b>Stock:</b> <span id="product-stock"></span></span>
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <img src="{% static 'icons/calendar.svg' %}" class="w-5 h-5">
+              <span><b>Release Year:</b> <span id="product-release-year"></span></span>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div>
+            <h2 class="text-lg font-bold text-gray-900 mb-2">Description</h2>
+            <p id="product-description" class="text-gray-700"></p>
+          </div>
+
         </div>
-
-        <!-- Price -->
-        <div>
-          <p class="inline-block bg-russet text-white px-5 py-3 rounded-xl text-xl font-semibold">
-            Rp{{ product.price }}
-          </p>
-        </div>
-
-        <!-- Brand & Seller Box -->
-        <div class="bg-dark-vanilla rounded-lg p-4 flex justify-between text-gray-800">
-          <div><b>Brand:</b> {{ product.brand|default:"Unknown" }}</div>
-          <div><b>Seller:</b> 
-            {% if product.user %}
-              {{ product.user.username }}
-            {% else %}
-              Anonymous
-            {% endif %}
-          </div>
-        </div>
-
-        <!-- Attributes -->
-        <div class="border-t border-gray-300 pt-4 grid grid-cols-2 gap-y-3 gap-x-6 text-gray-700">
-          {% if product.get_edition_type_display %}
-          <div class="flex items-center space-x-2">
-            <img src="{% static 'icons/edition.svg' %}" class="w-5 h-5">
-            <span><b>Edition:</b> {{ product.get_edition_type_display }}</span>
-          </div>
-          {% endif %}
-
-          {% if product.get_condition_display %}
-          <div class="flex items-center space-x-2">
-            <img src="{% static 'icons/condition.svg' %}" class="w-5 h-5">
-            <span><b>Condition:</b> {{ product.get_condition_display }}</span>
-          </div>
-          {% endif %}
-
-          {% if product.get_rarity_level_display %}
-          <div class="flex items-center space-x-2">
-            <img src="{% static 'icons/rarity.svg' %}" class="w-5 h-5">
-            <span><b>Rarity:</b> {{ product.get_rarity_level_display }}</span>
-          </div>
-          {% endif %}
-
-          <div class="flex items-center space-x-2">
-            <img src="{% static 'icons/certificate.svg' %}" class="w-5 h-5">
-            <span><b>Authenticity:</b> 
-              {% if product.authenticity_certificate %}
-                Available
-              {% else %}
-                Not Available
-              {% endif %}
-            </span>
-          </div>
-
-          {% if product.size %}
-          <div class="flex items-center space-x-2">
-            <img src="{% static 'icons/size.svg' %}" class="w-5 h-5">
-            <span><b>Size:</b> {{ product.size }}</span>
-          </div>
-          {% endif %}
-
-          <div class="flex items-center space-x-2">
-            <img src="{% static 'icons/stock.svg' %}" class="w-5 h-5">
-            <span><b>Stock:</b> {{ product.stock }}</span>
-          </div>
-
-          {% if product.release_year %}
-          <div class="flex items-center space-x-2">
-            <img src="{% static 'icons/calendar.svg' %}" class="w-5 h-5">
-            <span><b>Release Year:</b> {{ product.release_year }}</span>
-          </div>
-          {% endif %}
-        </div>
-
-        <!-- Description -->
-        <div>
-          <h2 class="text-lg font-bold text-gray-900 mb-2">Description</h2>
-          <p class="text-gray-700">{{ product.description }}</p>
-        </div>
-
       </div>
     </div>
   </div>
 </div>
+
+<script>
+
+const PRODUCT_ID = "{{ product.id }}";
+const PRODUCT_DETAIL_ENDPOINT = `{% url 'main:show_json_by_id' '00000000-0000-0000-0000-000000000000' %}`.replace(
+  '00000000-0000-0000-0000-000000000000',
+  PRODUCT_ID
+);
+
+// DOM Elements
+const loadingState = document.getElementById('loading-state');
+const errorState = document.getElementById('error-state');
+const productContent = document.getElementById('product-content');
+
+const productThumbnail = document.getElementById('product-thumbnail');
+const productName = document.getElementById('product-name');
+const productCategory = document.getElementById('product-category');
+const productPrice = document.getElementById('product-price');
+const productBrand = document.getElementById('product-brand');
+const productSeller = document.getElementById('product-seller');
+const productEdition = document.getElementById('product-edition');
+const productCondition = document.getElementById('product-condition');
+const productRarity = document.getElementById('product-rarity');
+const productAuthenticity = document.getElementById('product-authenticity');
+const productSize = document.getElementById('product-size');
+const productStock = document.getElementById('product-stock');
+const productReleaseYear = document.getElementById('product-release-year');
+const productDescription = document.getElementById('product-description');
+const productFeatured = document.getElementById('product-featured');
+
+// Show/hide state
+function showState(state) {
+  loadingState.classList.toggle('hidden', state !== 'loading');
+  errorState.classList.toggle('hidden', state !== 'error');
+  productContent.classList.toggle('hidden', state !== 'ready');
+}
+
+// Get readable category label
+function getCategoryLabel(categoryCode) {
+  const categoryMapping = {
+    jersey: 'Jersey',
+    scarves_banner: 'Scarves or Banners',
+    footballs: 'Collector Footballs',
+    autographed: 'Autographed Memorabilia',
+    second_hand: 'Second-Hand Collectible',
+    limited_edition: 'Limited Edition Item',
+    authentic_retail: 'Authentic Retail Jersey',
+    replica_jersey: 'Replica Jersey',
+    match_worn: 'Match-Worn Jersey'
+  };
+  return categoryMapping[categoryCode] || categoryCode;
+}
+
+// Render product details
+function renderProduct(product) {
+  document.title = `${product.name} - Product Detail`;
+
+  // Thumbnail
+  if (product.thumbnail) {
+    productThumbnail.src = product.thumbnail;
+    productThumbnail.alt = product.name;
+  } else {
+    productThumbnail.src = "{% static 'img/no-image.png' %}";
+  }
+
+  // Basic info
+  productName.textContent = product.name;
+  productCategory.textContent = getCategoryLabel(product.category);
+  productPrice.textContent = `Rp ${product.price.toLocaleString()}`;
+  productBrand.textContent = product.brand || 'Unknown';
+  productSeller.textContent = product.user_username || 'Anonymous';
+
+  // Attributes
+  productEdition.textContent = product.edition_type;
+  productCondition.textContent = product.condition;
+  productRarity.textContent = product.rarity_level;
+  productAuthenticity.textContent = product.authenticity_certificate ? 'Available' : 'Not Available';
+  productSize.textContent = product.size || '-';
+  productStock.textContent = product.stock;
+  productReleaseYear.textContent = product.release_year || '-';
+  productDescription.textContent = product.description;
+
+  // Featured badge
+  if (product.is_featured) {
+    productFeatured.classList.remove('hidden');
+  }
+}
+
+async function loadProductDetail() {
+  try {
+    showState('loading');
+
+    const response = await fetch(PRODUCT_DETAIL_ENDPOINT, {
+      headers: { 'Accept': 'application/json' },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch product detail');
+    }
+
+    const productData = await response.json();
+    renderProduct(productData);
+    showState('ready');
+  } catch (error) {
+    console.error('Error loading product detail:', error);
+    showState('error');
+  }
+}
+
+// Initialize page
+loadProductDetail();
+</script>
+
 {% endblock content %}

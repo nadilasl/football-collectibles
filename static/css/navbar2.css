@@ -1,0 +1,30 @@
+.navbar{
+    background-color: aliceblue;
+    padding: 10px;
+    align-items: center;
+    justify-content: space-between;
+    display: flex;
+    flex-direction: row;
+}
+
+.logo{
+    display: flex;
+    align-items: center;
+}
+
+.logo img{
+    height: 40px;
+}
+
+.logo h1{
+    color: white;
+    margin: 0;
+    font-weight: bold;
+}
+
+.nav-links a{
+    color: white;
+    padding: 10px;
+    font-weight: bold;
+}
+
