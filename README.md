@@ -1068,3 +1068,5 @@ Redaksi Jagoan Hosting. (2022, 19 Mei). AJAX: Pengertian, Cara Kerja, Fungsi dan
 GeeksforGeeks. (2023, 20 November). AJAX Security. Diakses dari https://www.geeksforgeeks.org/javascript/ajax-security/
 
 GeeksforGeeks. (2025, 9 Juni). Ajax Introduction. Diakses dari https://www.geeksforgeeks.org/javascript/ajax-introduction/
+
+

@@ -38,7 +38,10 @@
         </div>
       {% endif %}
 
-      <form method="POST" action="" class="space-y-5">
+      <!-- Client-side Form Errors Display (AJAX) -->
+      <div id="ajax-errors" class="mb-6" style="display:none;"></div>
+
+      <form id="register-form" method="POST" action="" class="space-y-5">
         {% csrf_token %}
         
         <div>
@@ -75,6 +78,7 @@
         </div>
 
         <button 
+          id="submit-btn"
           type="submit" 
           class="w-full bg-[#7F4721] text-white font-medium py-3 px-4 rounded hover:bg-[#7097A6] focus:outline-none focus:ring-2 focus:ring-[#95B0BF] focus:ring-offset-2 transition duration-200">
           Create Account
@@ -113,4 +117,89 @@
     </div>
   </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const form = document.getElementById('register-form');
+  const ajaxErrors = document.getElementById('ajax-errors');
+  const submitBtn = document.getElementById('submit-btn');
+
+  function renderErrors(payload) {
+    ajaxErrors.innerHTML = '';
+    ajaxErrors.style.display = 'none';
+    if (!payload) return;
+    const container = document.createElement('div');
+    container.className = 'space-y-2';
+    
+    // non_field_errors
+    if (payload.non_field_errors && payload.non_field_errors.length) {
+      payload.non_field_errors.forEach(msg => {
+        const d = document.createElement('div');
+        d.className = 'px-4 py-3 rounded text-sm border bg-red-50 border-red-200 text-red-700';
+        d.textContent = msg;
+        container.appendChild(d);
+      });
+    }
+    
+    // field errors
+    if (payload.field_errors) {
+      for (const [field, errors] of Object.entries(payload.field_errors)) {
+        errors.forEach(err => {
+          const d = document.createElement('div');
+          d.className = 'px-4 py-3 rounded text-sm border bg-red-50 border-red-200 text-red-700';
+          d.innerHTML = `<strong>${field}</strong>: ${err}`;
+          container.appendChild(d);
+        });
+      }
+    }
+    
+    if (container.children.length) {
+      ajaxErrors.appendChild(container);
+      ajaxErrors.style.display = 'block';
+    }
+  }
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    ajaxErrors.style.display = 'none';
+
+    const formData = new FormData(form);
+    
+    try {
+      const resp = await fetch(form.action || window.location.href, {
+        method: 'POST',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: formData
+      });
+
+      const contentType = resp.headers.get('content-type') || '';
+      if (contentType.includes('application/json')) {
+        const data = await resp.json();
+        if (data.success) {
+          // Show success toast and redirect
+          if (typeof showToast === 'function') {
+            showToast('Account created!', `Welcome ${data.username || 'user'}! Redirecting to login...`, 'success', 2500);
+          }
+          setTimeout(() => {
+            window.location.href = data.redirect || '/login';
+          }, 2000);
+        } else {
+          renderErrors(data);
+        }
+      } else {
+        // fallback: reload page to show server validation
+        window.location.reload();
+      }
+    } catch (err) {
+      renderErrors({ non_field_errors: ['Network error. Please try again.'] });
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+});
+</script>
+
 {% endblock content %}

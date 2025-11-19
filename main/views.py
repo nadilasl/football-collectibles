@@ -12,6 +12,8 @@ from main.models import Product
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.utils.html import strip_tags
+import requests
+import json
 
 # Create your views here.
 @login_required(login_url='/login')
@@ -140,23 +142,95 @@ def register(request):
 
     if request.method == "POST":
         form = UserCreationForm(request.POST)
+        
+        # Deteksi AJAX request
+        is_ajax = request.headers.get('x-requested-with') == 'XMLHttpRequest'
+        
         if form.is_valid():
-            form.save()
+            user = form.save()
+            
+            # Return JSON untuk AJAX
+            if is_ajax:
+                return JsonResponse({
+                    'success': True,
+                    'message': 'Your account has been successfully created!',
+                    'redirect': reverse('main:login'),
+                    'username': user.username
+                }, status=201)
+            
+            # Non-AJAX fallback
             messages.success(request, 'Your account has been successfully created!')
             return redirect('main:login')
+        else:
+            # Registrasi gagal
+            if is_ajax:
+                errors = {
+                    'non_field_errors': [],
+                    'field_errors': {}
+                }
+                
+                # Non-field errors
+                if form.non_field_errors():
+                    errors['non_field_errors'] = list(form.non_field_errors())
+                
+                # Field errors
+                for field, error_list in form.errors.items():
+                    if field != '__all__':
+                        errors['field_errors'][field] = list(error_list)
+                
+                return JsonResponse({
+                    'success': False,
+                    **errors
+                }, status=400)
+    
     context = {'form':form}
     return render(request, 'register.html', context)
 
 def login_user(request):
    if request.method == 'POST':
       form = AuthenticationForm(data=request.POST)
+      
+      # Deteksi AJAX request
+      is_ajax = request.headers.get('x-requested-with') == 'XMLHttpRequest'
 
       if form.is_valid():
         user = form.get_user()
         login(request, user)
+        
+        # Return JSON untuk AJAX
+        if is_ajax:
+            return JsonResponse({
+                'success': True,
+                'message': 'Login successful!',
+                'redirect': reverse('main:show_main'),
+                'username': user.username
+            }, status=200)
+        
+        # Non-AJAX fallback
         response = HttpResponseRedirect(reverse("main:show_main"))
         response.set_cookie('last_login', str(datetime.datetime.now()))
         return response
+      else:
+        # Login gagal
+        if is_ajax:
+            errors = {
+                'non_field_errors': [],
+                'field_errors': {}
+            }
+            
+            # Non-field errors
+            if form.non_field_errors():
+                errors['non_field_errors'] = list(form.non_field_errors())
+            
+            # Field errors
+            for field, error_list in form.errors.items():
+                if field != '__all__':
+                    errors['field_errors'][field] = list(error_list)
+            
+            return JsonResponse({
+                'success': False,
+                **errors
+            }, status=400)
 
    else:
       form = AuthenticationForm(request)
@@ -292,3 +366,163 @@ def edit_product_ajax(request, id):
     product.save()
 
     return JsonResponse({'message': 'Product updated successfully'}, status=200)
+
+def proxy_image(request):
+    image_url = request.GET.get('url')
+    if not image_url:
+        return HttpResponse('No URL provided', status=400)
+    
+    try:
+        # Fetch image from external source
+        response = requests.get(image_url, timeout=10)
+        response.raise_for_status()
+        
+        # Return the image with proper content type
+        return HttpResponse(
+            response.content,
+            content_type=response.headers.get('Content-Type', 'image/jpeg')
+        )
+    except requests.RequestException as e:
+        return HttpResponse(f'Error fetching image: {str(e)}', status=500)
+    
+
+@csrf_exempt
+def create_product_flutter(request):
+    if request.method == 'POST':
+        try:
+            # Extract data dari Flutter form (request.POST, bukan JSON)
+            name = strip_tags(request.POST.get("name", ""))
+            price = request.POST.get("price", "0")
+            description = strip_tags(request.POST.get("description", ""))
+            thumbnail = request.POST.get("thumbnail", "")
+            category = request.POST.get("category", "jersey")
+            stock = request.POST.get("stock", "0")
+            brand = request.POST.get("brand", "")
+            release_year = request.POST.get("release_year", "")
+            size = request.POST.get("size", "")
+            edition_type = request.POST.get("edition_type", "replica")
+            condition = request.POST.get("condition", "new")
+            authenticity_certificate = request.POST.get("authenticity_certificate", "false") == "true"
+            rarity_level = request.POST.get("rarity_level", "common")
+            is_featured = request.POST.get("is_featured", "false") == "true"
+            
+            # Debug print
+            print("=" * 60)
+            print("✅ CREATE PRODUCT REQUEST")
+            print(f"Name: {name}")
+            print(f"Price: {price}")
+            print(f"Category: {category}")
+            print(f"User: {request.user}")
+            print("=" * 60)
+            
+            # Create Product
+            new_product = Product.objects.create(
+                user=request.user,
+                name=name,
+                price=int(price) if price else 0,
+                description=description,
+                thumbnail=thumbnail,
+                category=category,
+                stock=int(stock) if stock else 0,
+                brand=brand,
+                release_year=int(release_year) if release_year else None,
+                size=size if size else '',
+                edition_type=edition_type,
+                condition=condition,
+                authenticity_certificate=authenticity_certificate,
+                rarity_level=rarity_level,
+                is_featured=is_featured,
+            )
+            
+            print(f"✅ Product created with ID: {new_product.id}")
+            
+            # Return response yang Flutter expect
+            return JsonResponse({
+                "status": "success",
+                "message": f"Product '{name}' berhasil ditambahkan!",
+                "data": {
+                    "id": str(new_product.id),
+                    "name": new_product.name,
+                    "price": new_product.price,
+                }
+            }, status=201)
+            
+        except Exception as e:
+            print(f"❌ Error: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            
+            return JsonResponse({
+                "status": "error",
+                "message": f"Error: {str(e)}"
+            }, status=500)
+    else:
+        return JsonResponse({
+            "status": "error",
+            "message": "Method not allowed"
+        }, status=405)
+        
+@csrf_exempt
+def get_products_json(request):
+    """Get all products as JSON for Flutter"""
+    products = Product.objects.all().select_related('user')
+    
+    data = []
+    for product in products:
+        data.append({
+            'id': str(product.id),
+            'name': product.name,
+            'price': product.price,
+            'description': product.description,
+            'thumbnail': product.thumbnail,
+            'category': product.category,
+            'is_featured': product.is_featured,
+            'stock': product.stock,
+            'brand': product.brand,
+            'release_year': product.release_year,
+            'size': product.size,
+            'edition_type': product.edition_type,
+            'condition': product.condition,
+            'authenticity_certificate': product.authenticity_certificate,
+            'rarity_level': product.rarity_level,
+            'user': {
+                'username': product.user.username if product.user else 'Unknown',
+                'id': product.user.id if product.user else None,
+            }
+        })
+    
+    return JsonResponse(data, safe=False)
+
+@csrf_exempt  
+def get_user_products_json(request):
+    """Get current user's products as JSON for Flutter"""
+    if not request.user.is_authenticated:
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+        
+    products = Product.objects.filter(user=request.user)
+    
+    data = []
+    for product in products:
+        data.append({
+            'id': str(product.id),
+            'name': product.name,
+            'price': product.price,
+            'description': product.description,
+            'thumbnail': product.thumbnail,
+            'category': product.category,
+            'is_featured': product.is_featured,
+            'stock': product.stock,
+            'brand': product.brand,
+            'release_year': product.release_year,
+            'size': product.size,
+            'edition_type': product.edition_type,
+            'condition': product.condition,
+            'authenticity_certificate': product.authenticity_certificate,
+            'rarity_level': product.rarity_level,
+            'user': {
+                'username': product.user.username if product.user else 'Unknown',
+                'id': product.user.id if product.user else None,
+            }
+        })
+    
+    return JsonResponse(data, safe=False)

@@ -19,10 +19,10 @@
           <div class="text-sm font-medium">{{ name|default:user.username }}</div>
           <div class="text-xs text-gray-400">{{ npm|default:"Student" }} - {{ class|default:"Class" }}</div>
         </div>
-        <a href="{% url 'main:logout' %}" 
+        <button onclick="handleLogout(event)" 
            class="bg-[#95B0BF] px-4 py-2 rounded-full hover:bg-[#7F4721] hover:text-white transition-colors">
           Logout
-        </a>
+        </button>
       {% else %}
         <a href="{% url 'main:login' %}" class="hover:text-[#7097A6] transition-colors">Login</a>
         <a href="{% url 'main:register' %}" 
@@ -62,10 +62,10 @@
             <div class="font-medium">{{ name|default:user.username }}</div>
             <div class="text-sm text-gray-400">{{ npm|default:"Student" }} - {{ class|default:"Class" }}</div>
           </div>
-          <a href="{% url 'main:logout' %}" 
-             class="block bg-[#95B0BF] px-4 py-2 rounded-full hover:bg-[#7F4721] hover:text-white text-center transition-colors">
+          <button onclick="handleLogout(event)" 
+             class="w-full bg-[#95B0BF] px-4 py-2 rounded-full hover:bg-[#7F4721] hover:text-white text-center transition-colors">
             Logout
-          </a>
+          </button>
         {% else %}
           <div class="space-y-3">
             <a href="{% url 'main:login' %}" class="block hover:text-[#7097A6] transition-colors">Login</a>
@@ -97,4 +97,29 @@
       menu.classList.add("hidden");
     }
   });
+
+  // Handle logout with toast
+  async function handleLogout(event) {
+    event.preventDefault();
+    
+    try {
+      const response = await fetch('{% url "main:logout" %}', {
+        method: 'GET',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      });
+      
+      if (typeof showToast === 'function') {
+        showToast('Goodbye!', 'You have been logged out successfully', 'success', 2000);
+      }
+      
+      setTimeout(() => {
+        window.location.href = '{% url "main:login" %}';
+      }, 1500);
+    } catch (error) {
+      // Fallback jika AJAX gagal
+      window.location.href = '{% url "main:logout" %}';
+    }
+  }
 </script>
